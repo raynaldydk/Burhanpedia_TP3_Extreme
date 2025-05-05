@@ -20,4 +20,17 @@ public class TransaksiRepository {
     public void prosesTransaksi(String statusTransaksi) {
         // TODO
     }
+
+    public Transaksi getTransaksiById(String transaksiId) {
+        for (Transaksi transaksi : transaksiList) {
+            if(transaksi.getId().equals(transaksiId)){
+                return transaksi;
+            }
+        }
+        return null;
+    }
+
+    public void deleteTransaksibyID(String transaksiID) {
+        this.getList().remove(this.getTransaksiById(transaksiID));
+    }
 }

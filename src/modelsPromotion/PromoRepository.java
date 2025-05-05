@@ -71,4 +71,6 @@ public class PromoRepository implements DiskonRepository<Promo> {
         // Success msg
         System.out.printf("Promo berhasil dibuat : %s\n", promoBaru.getId());
     }
+
+
 }

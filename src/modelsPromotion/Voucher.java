@@ -50,4 +50,8 @@ public class Voucher {
     public int getSisaPemakaian() {
         return sisaPemakaian;
     }
+
+    public void pakaiVoucher(){
+        this.sisaPemakaian -= 1;
+    }
 }

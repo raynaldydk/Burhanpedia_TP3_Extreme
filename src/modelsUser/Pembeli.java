@@ -12,4 +12,8 @@ public class Pembeli extends User{
     public Cart getCart(){
         return keranjang;
     }
+
+    public void setKeranjang(Cart keranjang) {
+        this.keranjang = keranjang;
+    }
 }

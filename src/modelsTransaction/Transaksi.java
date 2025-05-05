@@ -13,8 +13,16 @@ public class Transaksi {
     private String jenisTransaksi;
     private long biayaOngkir;
 
-    public Transaksi() {
-
+    public Transaksi(String id, String namePembeli, String namePenjual, String idDiskon, String jenisTransaksi, long biayaOngkir) {
+        this.id = id;
+        this.namePembeli = namePembeli;
+        this.namePenjual = namePenjual;
+        this.namePengirim = null;
+        this.idDiskon = idDiskon;
+        this.jenisTransaksi = jenisTransaksi;
+        this.biayaOngkir = biayaOngkir;
+        historyStatus = new ArrayList<>();
+        produkDibeli = new ArrayList<>();
     }
 
     public String refund(){
@@ -28,5 +36,25 @@ public class Transaksi {
 
     public String getNamePenjual() {
         return namePenjual;
+    }
+
+    public ArrayList<TransaksiProduct> getProdukDibeli() {
+        return produkDibeli;
+    }
+
+    public ArrayList<TransactionStatus> getHistoryStatus() {
+        return historyStatus;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getIdDiskon() {
+        return idDiskon;
+    }
+
+    public long getBiayaOngkir() {
+        return biayaOngkir;
     }
 }
