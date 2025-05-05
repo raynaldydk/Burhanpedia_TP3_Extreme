@@ -1,5 +1,6 @@
 package main;
 
+import modelsAdmin.Admin;
 import modelsUser.Pembeli;
 import modelsUser.Pengirim;
 import modelsUser.Penjual;
@@ -81,6 +82,17 @@ public class MainMenuSystem implements SystemMenu {
 
         System.out.print("Masukkan password: ");
         String password = input.nextLine();
+
+        // Cek login admin
+        if(mainRepository.getAdminRepo().login(username, password)) {
+            // Buat instance baru systemAdmin
+            Admin admin = mainRepository.getAdminRepo().getAdminByUsername(username);
+
+            // Success msg
+            System.out.printf("Login berhasil! Selamat datang %s\n", username);
+            systemAdmin = new SystemAdmin(admin, mainRepository);
+            systemAdmin.handleMenu();
+        }
 
         // Cek login
         if(!mainRepository.getUserRepo().login(username, password)){
