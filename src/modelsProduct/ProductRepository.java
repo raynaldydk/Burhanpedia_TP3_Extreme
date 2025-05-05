@@ -32,4 +32,13 @@ public class ProductRepository {
     public ArrayList<Product> getProductList() {
         return productList;
     }
+
+    public Product getProductByName(String productName) {
+        for(Product product : productList) {
+            if(product.getProductName().equalsIgnoreCase(productName)) {
+                return product;
+            }
+        }
+        return null;
+    }
 }
