@@ -258,6 +258,7 @@ public class SystemAdmin implements SystemMenu {
             );
         }
 
+        // Apabila voucher tidak ditemukan
         else{
             System.out.println("===========================================================");
             System.out.printf("Tidak ada voucher dengan id %s\n", inputVoucher);
