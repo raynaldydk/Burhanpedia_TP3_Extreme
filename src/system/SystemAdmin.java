@@ -95,6 +95,34 @@ public class SystemAdmin implements SystemMenu {
             return;
         }
 
+        // Show menu voucher
+        String pilihanMenuVoucher;
+
+        do{
+            System.out.println("\n===== MENU LIHAT VOUCHER =======");
+            System.out.println("1. Lihat Semua");
+            System.out.println("2. Lihat Berdasarkan ID");
+            System.out.println("3. Kembali");
+            System.out.println(" ");
+            System.out.print("Perintah: ");
+
+            pilihanMenuVoucher = input.nextLine();
+
+            switch (pilihanMenuVoucher){
+                case "1":
+                    showVoucher();
+                    break;
+                case "2":
+                    showVoucherById();
+                    break;
+                case "3":
+                    break;
+                default:
+                    System.out.println("Input yang anda masukkan salah!");
+                    break;
+            }
+        }while(!pilihanMenuVoucher.equals("3"));
+
         // Apabila ada voucher
         System.out.println("============================================================");
         for(Voucher voucher : mainRepository.getVoucherRepo().getAll()){
@@ -152,6 +180,23 @@ public class SystemAdmin implements SystemMenu {
         }while(!pilihanMenuPromo.equals("3"));
     }
 
+    public void showVoucher(){
+        System.out.println("============================================================");
+        for(Voucher voucher : mainRepository.getVoucherRepo().getAll()){
+            // Format tanggal
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String formattedDate = dateFormat.format(voucher.getBerlakuHingga());
+
+            // Print voucher
+            System.out.printf("%s [Dapat digunakan %d kali] [Sampai dengan %s]\n",
+                    voucher.getId(),
+                    voucher.getSisaPemakaian(),
+                    formattedDate
+            );
+        }
+        System.out.println("============================================================");
+    }
+
     public void showPromo(){
         System.out.println("============================================================");
         for(Promo promo : mainRepository.getPromoRepo().getAll()){
@@ -190,6 +235,33 @@ public class SystemAdmin implements SystemMenu {
             System.out.printf("Tidak ada promo dengan id %s\n", inputPromo);
             System.out.println("============================================================");
         }
+    }
 
+    public void showVoucherById(){
+        // Masukkan id voucher yang ingin dicari
+        System.out.print("Masukkan id voucher: ");
+        String inputVoucher = input.nextLine();
+
+        // Cek apakah voucher ada di repository
+        if(mainRepository.getVoucherRepo().getById(inputVoucher) != null){
+            Voucher voucherTemp = mainRepository.getVoucherRepo().getById(inputVoucher);
+
+            // Format tanggal
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String formattedDate = dateFormat.format(voucherTemp.getBerlakuHingga());
+
+            // Print voucher
+            System.out.printf("%s [Dapat digunakan %d kali] [Sampai dengan %s]\n",
+                    voucherTemp.getId(),
+                    voucherTemp.getSisaPemakaian(),
+                    formattedDate
+            );
+        }
+
+        else{
+            System.out.println("===========================================================");
+            System.out.printf("Tidak ada voucher dengan id %s\n", inputVoucher);
+            System.out.println("===========================================================");
+        }
     }
 }
