@@ -125,6 +125,34 @@ public class SystemAdmin implements SystemMenu {
             return;
         }
 
+        // Show menu promo
+        String pilihanMenuPromo;
+
+        do{
+            System.out.println("\n===== MENU LIHAT PROMO =======");
+            System.out.println("1. Lihat Semua");
+            System.out.println("2. Lihat Berdasarkan ID");
+            System.out.println("3. Kembali");
+            System.out.print("\nPerintah: ");
+            pilihanMenuPromo = input.nextLine();
+
+            switch (pilihanMenuPromo){
+                case "1":
+                    showPromo();
+                    break;
+                case "2":
+                    showPromoById();
+                    break;
+                case "3":
+                    break;
+                default:
+                    System.out.println("Input yang anda masukkan salah!");
+                    break;
+            }
+        }while(!pilihanMenuPromo.equals("3"));
+    }
+
+    public void showPromo(){
         System.out.println("============================================================");
         for(Promo promo : mainRepository.getPromoRepo().getAll()){
             // Parse tanggal menjadi string
@@ -135,5 +163,33 @@ public class SystemAdmin implements SystemMenu {
             System.out.printf("%s [Sampai dengan %s]\n", promo.getId(), formattedDate);
         }
         System.out.println("============================================================");
+    }
+
+    public void showPromoById(){
+        // Masukkan id promo yang ingin di cari
+        System.out.print("Masukkan id promo: ");
+        String inputPromo = input.nextLine();
+
+        // Cek apakah promo yang di input ada pada repository
+        if(mainRepository.getPromoRepo().getById(inputPromo) != null){
+            Promo promoTemp = mainRepository.getPromoRepo().getById(inputPromo);
+
+            // Format the date from Date object to "dd/MM/yyyy" format
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String formattedDate = dateFormat.format(promoTemp.getBerlakuHingga());
+
+            // print promo
+            System.out.println("============================================================");
+            System.out.printf("%s [Sampai dengan %s]\n", promoTemp.getId(), formattedDate);
+            System.out.println("============================================================");
+        }
+
+        // Jika promo tidak ada pada repo
+        else{
+            System.out.println("============================================================");
+            System.out.printf("Tidak ada promo dengan id %s\n", inputPromo);
+            System.out.println("============================================================");
+        }
+
     }
 }
