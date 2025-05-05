@@ -18,11 +18,45 @@ public class SystemPengirim implements SystemMenu {
 
     @Override
     public String showMenu() {
-        return "";
+        return """
+                
+                ===== MENU PENGIRIM =====
+                1. Find Job
+                2. Take Job
+                3. Confirm Job
+                4. Lihat Riwayat Transaksi
+                5. Kembali ke Menu Utama
+                """;
     }
 
     @Override
     public void handleMenu() {
+        String inputMenu;
+
+        do{
+            System.out.println(showMenu());
+            System.out.print("Perintah: ");
+            inputMenu = input.nextLine();
+            switch(inputMenu){
+                case "1":
+                    handleFindJob();
+                    break;
+                case "2":
+                    handleTakeJob();
+                    break;
+                case "3":
+                    handleConfirmJob();
+                    break;
+                case "4":
+                    handleRiwayatTransaksi();
+                    break;
+                case "5":
+                    break;
+                default:
+                    System.out.println("Invalid input!");
+                    break;
+            }
+        }while(!inputMenu.equals("5"));
 
     }
 
