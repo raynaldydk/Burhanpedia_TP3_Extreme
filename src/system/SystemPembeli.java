@@ -1,8 +1,12 @@
 package system;
 
 import main.Burhanpedia;
+import modelsProduct.Product;
 import modelsUser.Pembeli;
+import modelsUser.Penjual;
+import modelsUser.User;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class SystemPembeli implements SystemMenu {
@@ -101,7 +105,35 @@ public class SystemPembeli implements SystemMenu {
     }
 
     public void handleCekDaftarBarang(){
+        // Cek apakah ada penjual yang memiliki dagangan
+        if(getJumlahPenjualDenganProduk() == 0){
+            System.out.println("==============================");
+            System.out.println("Toko belum memiliki produk!");
+            System.out.println("==============================");
+            return;
+        }
 
+        ArrayList<Penjual> daftarPenjual = getDaftarPenjual();
+        System.out.println("========================================");
+        for(Penjual penjual : daftarPenjual){
+            // Print nama toko
+            System.out.println(penjual.getRepo().getNamaToko());
+
+            // Print produk
+            for(Product product : penjual.getRepo().getProductList()){
+                System.out.printf("%-10s %14.2f %d\n",
+                        product.getProductName(),
+                        (double) product.getProductPrice(),
+                        product.getProductStock()
+                );
+            }
+
+            // Print dashes line
+            if(penjual != daftarPenjual.get(daftarPenjual.size() - 1)){
+                System.out.println("----------------------------------------");
+            }
+        }
+        System.out.println("========================================");
     }
 
     public void handleTambahToKeranjang(){
@@ -122,5 +154,29 @@ public class SystemPembeli implements SystemMenu {
 
     public void handleRiwayatTransaksi(){
 
+    }
+
+    public ArrayList<Penjual> getDaftarPenjual(){
+        ArrayList<Penjual> daftarPenjual = new ArrayList<>();
+
+        for (User user : mainRepository.getUserRepo().getAll()){
+            if(user.getRole().equals("Penjual")){
+                daftarPenjual.add((Penjual) user);
+            }
+        }
+
+        return daftarPenjual;
+    }
+
+    public int getJumlahPenjualDenganProduk(){
+        int total = 0;
+
+        for(Penjual penjual : getDaftarPenjual()){
+            if(!penjual.getRepo().getProductList().isEmpty()){
+                total++;
+            }
+        }
+
+        return total;
     }
 }
