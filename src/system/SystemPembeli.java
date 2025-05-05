@@ -82,7 +82,22 @@ public class SystemPembeli implements SystemMenu {
     }
 
     public void handleTopUpSaldo(){
+        // Input saldo yang mau ditambahkan
+        System.out.print("Masukkan saldo yang ingin ditambah: ");
+        long saldoTopUp = input.nextLong();
+        input.nextLine();
 
+        // Cek apakah jumlah top up saldo valid
+        if(saldoTopUp <= 0){
+            System.out.println("Nominal top up saldo tidak boleh negatif atau nol!");
+            return;
+        }
+
+        // Tambahkan saldo ke dompet pembeli
+        activePembeli.setBalance(saldoTopUp + activePembeli.getBalance());
+
+        // Success msg
+        System.out.printf("Saldo berhasil ditambah! Saldo saat ini: %.2f\n", (double) activePembeli.getBalance());
     }
 
     public void handleCekDaftarBarang(){
