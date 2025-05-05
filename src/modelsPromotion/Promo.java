@@ -19,4 +19,8 @@ public class Promo {
     public String getId() {
         return id;
     }
+
+    public Date getBerlakuHingga() {
+        return berlakuHingga;
+    }
 }

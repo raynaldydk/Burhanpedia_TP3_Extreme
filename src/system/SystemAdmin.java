@@ -2,6 +2,7 @@ package system;
 
 import main.Burhanpedia;
 import modelsAdmin.Admin;
+import modelsPromotion.Promo;
 import modelsPromotion.Voucher;
 
 import java.text.SimpleDateFormat;
@@ -113,6 +114,26 @@ public class SystemAdmin implements SystemMenu {
     }
 
     public void handleLihatPromo(){
+        // Cek apakah ada promo di repo
+        if (mainRepository.getPromoRepo().getAll().isEmpty()){
+            System.out.println("""
+                    ==============================
+                    Belum ada promo yang dibuat!
+                    ==============================
+                    """
+            );
+            return;
+        }
 
+        System.out.println("============================================================");
+        for(Promo promo : mainRepository.getPromoRepo().getAll()){
+            // Parse tanggal menjadi string
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String formattedDate = dateFormat.format(promo.getBerlakuHingga());
+
+            // Print promo
+            System.out.printf("%s [Sampai dengan %s]\n", promo.getId(), formattedDate);
+        }
+        System.out.println("============================================================");
     }
 }
