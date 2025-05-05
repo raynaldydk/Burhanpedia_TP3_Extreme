@@ -3,6 +3,7 @@ package main;
 import modelsUser.Pembeli;
 import modelsUser.Pengirim;
 import modelsUser.Penjual;
+import modelsUser.User;
 import system.*;
 
 import java.util.ArrayList;
@@ -68,6 +69,57 @@ public class MainMenuSystem implements SystemMenu {
     }
 
     public void handleLogin(){
+        System.out.println("\n===== LOGIN =====");
+        System.out.print("Masukkan username: ");
+        String username = input.nextLine();
+
+        // Cek apakah username ada pada userRepo
+        if(mainRepository.getUserRepo().getUserByName(username) == null) {
+            System.out.printf("Tidak ada user dengan nama %s\n", username);
+            return;
+        }
+
+        System.out.print("Masukkan password: ");
+        String password = input.nextLine();
+
+        // Cek login
+        if(!mainRepository.getUserRepo().login(username, password)){
+            System.out.println("Password salah!");
+            return;
+        }
+
+        String pilihan;
+        do{
+            System.out.println("Pilih opsi login:");
+            System.out.println("1. Penjual");
+            System.out.println("2. Pembeli");
+            System.out.println("3. Pengirim");
+            System.out.println("4. Cek Saldo Antar Role");
+            System.out.println("5. Batal Login");
+            System.out.print("\nPerintah: ");
+            pilihan = input.nextLine();
+
+            switch (pilihan){
+                case "1":
+                    handleLoginPenjual(username);
+                    break;
+                case "2":
+                    handleLoginPembeli(username);
+                    break;
+                case "3":
+                    handleLoginPengirim(username);
+                    break;
+                case "4":
+                    handleCekSaldoAntarAkun(username);
+                    break;
+                case "5":
+                    System.out.println("Login dibatalkan, kembali ke menu utama...");
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid!");
+                    break;
+            }
+        }while(!pilihan.equals("5"));
 
     }
 
@@ -79,7 +131,7 @@ public class MainMenuSystem implements SystemMenu {
 
         // Cek apakah sudah ada akun dengan username tersebut
         if(mainRepository.getUserRepo().getUserByName(username) != null){
-            System.out.print("Username sudah ada! Silahkan konfirmasi password untuk menambahkan role lain.");
+            System.out.println("Username sudah ada! Silahkan konfirmasi password untuk menambahkan role lain.");
 
             // Cek apakah user sudah memiliki semua role
             ArrayList<String> userRoles = mainRepository.getUserRepo().getUserRoles(username);
@@ -215,5 +267,59 @@ public class MainMenuSystem implements SystemMenu {
         mainRepository.getUserRepo().getAll().add(pengirim);
 
         System.out.println("Registrasi akun pengirim berhasil!");
+    }
+
+    public void handleLoginPenjual(String username){
+        ArrayList<String> userRoles = mainRepository.getUserRepo().getUserRoles(username);
+
+        if(userRoles.contains("Penjual")){
+            for(User user : mainRepository.getUserRepo().getAll()){
+                if(user.getUsername().equalsIgnoreCase(username) && user.getRole().equals("Penjual")){
+                    System.out.printf("Login berhasil! Selamat datang %s!\n", username);
+                    Penjual penjual = (Penjual) user;
+                    systemPenjual = new SystemPenjual(penjual, mainRepository);
+                }
+            }
+        }
+
+        else{
+            System.out.printf("Username %s tidak memiliki role penjual!\n", username.toLowerCase());
+        }
+    }
+
+    public void handleLoginPembeli(String username){
+        ArrayList<String> userRoles = mainRepository.getUserRepo().getUserRoles(username);
+
+        if(userRoles.contains("Pembeli")){
+            for(User user : mainRepository.getUserRepo().getAll()){
+                if(user.getUsername().equalsIgnoreCase(username) && user.getRole().equals("Pembeli")){
+                    System.out.printf("Login berhasil! Selamat datang %s!\n", username);
+                    Pembeli pembeli = (Pembeli) user;
+                    systemPembeli = new SystemPembeli(pembeli, mainRepository);
+                }
+            }
+        }
+
+        else{
+            System.out.printf("Username %s tidak memiliki role pembeli!\n", username.toLowerCase());
+        }
+    }
+
+    public void handleLoginPengirim(String username){
+        ArrayList<String> userRoles = mainRepository.getUserRepo().getUserRoles(username);
+
+        if(userRoles.contains("Pengirim")){
+            for(User user : mainRepository.getUserRepo().getAll()){
+                if(user.getUsername().equalsIgnoreCase(username) && user.getRole().equals("Pengirim")){
+                    System.out.printf("Login berhasil! Selamat datang %s!\n", username);
+                    Pengirim pengirim = (Pengirim) user;
+                    systemPengirim = new SystemPengirim(pengirim, mainRepository);
+                }
+            }
+        }
+
+        else{
+            System.out.printf("Username %s tidak memiliki role pengirim!\n", username.toLowerCase());
+        }
     }
 }
