@@ -25,4 +25,8 @@ public class Transaksi {
     public String getCurrentStatus(){
         return this.historyStatus.get(historyStatus.size() - 1).getStatus();
     }
+
+    public String getNamePenjual() {
+        return namePenjual;
+    }
 }

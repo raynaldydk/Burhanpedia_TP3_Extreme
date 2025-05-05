@@ -2,8 +2,10 @@ package system;
 
 import main.Burhanpedia;
 import modelsProduct.Product;
+import modelsTransaction.Transaksi;
 import modelsUser.Penjual;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class SystemPenjual implements SystemMenu{
@@ -212,10 +214,26 @@ public class SystemPenjual implements SystemMenu{
     }
 
     public void handleKirimBarang(){
+        // Cek apakah ada barang yang perlu dikirim
+        if(getTransaksiPerluDikirimList() == null){
+            System.out.println("========================================");
+            System.out.println("Tidak ada barang yang bisa dikirim!");
+            System.out.println("========================================");
+            return;
+        }
+
         // TODO
     }
 
     public void handleLaporanPendapatan(){
+        // Cek apakah ada transaksi yang dilakukan penjual
+        if(getTransaksiListByPenjual() == null){
+            System.out.println("================================");
+            System.out.println("Laporan pendapatan masih kosong!");
+            System.out.println("================================");
+            return;
+        }
+
         // TODO
     }
 
@@ -226,6 +244,39 @@ public class SystemPenjual implements SystemMenu{
     }
 
     public void handleRiwayatTransaksi(){
+        // Cek apakah ada transaksi yang dilakukan penjual
+        if(getTransaksiListByPenjual() == null){
+            System.out.println("================================");
+            System.out.println("Riwayat transaksi masih kosong! ");
+            System.out.println("================================");
+            return;
+        }
         // TODO
+    }
+
+    public ArrayList<Transaksi> getTransaksiListByPenjual(){
+        ArrayList<Transaksi> transaksiList = new ArrayList<>();
+
+        for(Transaksi transaksi : mainRepository.getTransaksiRepo().getList()){
+            if(transaksi.getNamePenjual().equalsIgnoreCase(activePenjual.getRepo().getNamaToko())){
+                transaksiList.add(transaksi);
+            }
+        }
+
+        return transaksiList;
+    }
+
+    public ArrayList<Transaksi> getTransaksiPerluDikirimList(){
+        ArrayList<Transaksi> transaksiList = new ArrayList<>();
+
+        for(Transaksi transaksi : mainRepository.getTransaksiRepo().getList()){
+            if(transaksi.getNamePenjual().equalsIgnoreCase(activePenjual.getRepo().getNamaToko())){
+                if(transaksi.getCurrentStatus().equalsIgnoreCase("Sedang Dikemas")){
+                    transaksiList.add(transaksi);
+                }
+            }
+        }
+
+        return transaksiList;
     }
 }
