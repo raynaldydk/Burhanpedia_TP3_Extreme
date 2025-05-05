@@ -2,7 +2,9 @@ package system;
 
 import main.Burhanpedia;
 import modelsAdmin.Admin;
+import modelsPromotion.Voucher;
 
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 public class SystemAdmin implements SystemMenu {
@@ -70,7 +72,32 @@ public class SystemAdmin implements SystemMenu {
     }
 
     public void handleLihatVoucher(){
+        // Cek apakah ada voucher di repo
+        if(mainRepository.getVoucherRepo().getAll().isEmpty()){
+            System.out.println("""
+                    ==============================
+                    Belum ada voucher yang dibuat!
+                    ==============================
+                    """);
+            return;
+        }
 
+        // Apabila ada voucher
+        System.out.println("============================================================");
+        for(Voucher voucher : mainRepository.getVoucherRepo().getAll()){
+
+            // Format tanggal
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String tanggalBerlaku = dateFormat.format(voucher.getBerlakuHingga());
+
+            // Print voucher list
+            System.out.printf("%s [Dapat digunakan %d kali] [Sampai dengan %s]\n",
+                    voucher.getId(),
+                    voucher.getSisaPemakaian(),
+                    tanggalBerlaku
+            );
+        }
+        System.out.println("============================================================");
     }
 
     public void handleLihatPromo(){

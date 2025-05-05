@@ -21,4 +21,12 @@ public class Voucher {
     public String getId() {
         return id;
     }
+
+    public Date getBerlakuHingga() {
+        return berlakuHingga;
+    }
+
+    public int getSisaPemakaian() {
+        return sisaPemakaian;
+    }
 }
