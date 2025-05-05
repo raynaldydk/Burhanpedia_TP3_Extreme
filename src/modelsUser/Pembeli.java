@@ -7,6 +7,7 @@ public class Pembeli extends User{
 
     public Pembeli(String username, String password, String role) {
         super(username, password, role);
+        this.keranjang = new Cart();
     }
 
     public Cart getCart(){

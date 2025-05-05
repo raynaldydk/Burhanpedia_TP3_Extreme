@@ -61,19 +61,19 @@ public class SystemPengirim implements SystemMenu {
     }
 
     public void handleFindJob(){
-
+        // TODO
     }
 
     public void handleTakeJob(){
-
+        // TODO
     }
 
     public void handleConfirmJob(){
-
+        // TODO
     }
 
     public void handleRiwayatTransaksi(){
-
+        // TODO
     }
 
 }

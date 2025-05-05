@@ -92,6 +92,7 @@ public class MainMenuSystem implements SystemMenu {
             System.out.printf("Login berhasil! Selamat datang %s!\n", username);
             systemAdmin = new SystemAdmin(admin, mainRepository);
             systemAdmin.handleMenu();
+            return;
         }
 
         // Cek login
@@ -201,7 +202,7 @@ public class MainMenuSystem implements SystemMenu {
     }
 
     public void handleNextDay(){
-
+        // TODO
     }
 
     public void handleCekSaldoAntarAkun(String username){

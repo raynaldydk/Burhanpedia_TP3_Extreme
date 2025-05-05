@@ -9,13 +9,11 @@ import modelsTransaction.Transaksi;
 import modelsTransaction.TransaksiProduct;
 import modelsUser.Pembeli;
 import modelsUser.Penjual;
-import modelsUser.User;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
-import java.util.UUID;
 
 public class SystemPembeli implements SystemMenu {
     private Pembeli activePembeli;
@@ -121,9 +119,19 @@ public class SystemPembeli implements SystemMenu {
             return;
         }
 
+        // get list penjual
         ArrayList<Penjual> daftarPenjual = mainRepository.getDaftarPenjual();
+
+        // Filter penjuals that have products
+        ArrayList<Penjual> penjualDenganProduk = new ArrayList<>();
+        for (Penjual penjual : daftarPenjual) {
+            if (!penjual.getRepo().getProductList().isEmpty()) {
+                penjualDenganProduk.add(penjual);
+            }
+        }
+
         System.out.println("========================================");
-        for(Penjual penjual : daftarPenjual){
+        for(Penjual penjual : penjualDenganProduk){
             // Print nama toko
             System.out.println(penjual.getRepo().getNamaToko());
 
@@ -284,21 +292,23 @@ public class SystemPembeli implements SystemMenu {
         String jenisTransaksi;
         long biayaOngkir;
 
-        if(pilihanOngkir.equals("1")){
-            jenisTransaksi = "Instant";
-            biayaOngkir = 20000;
-        }
-        else if(pilihanOngkir.equals("2")){
-            jenisTransaksi = "Reguler";
-            biayaOngkir = 15000;
-        }
-        else if(pilihanOngkir.equals("3")){
-            jenisTransaksi = "Next Day";
-            biayaOngkir = 10000;
-        }
-        else{
-            System.out.println("Input yang anda masukkan salah!");
-            return;
+        switch (pilihanOngkir) {
+            case "1" -> {
+                jenisTransaksi = "Instant";
+                biayaOngkir = 20000;
+            }
+            case "2" -> {
+                jenisTransaksi = "Reguler";
+                biayaOngkir = 15000;
+            }
+            case "3" -> {
+                jenisTransaksi = "Next Day";
+                biayaOngkir = 10000;
+            }
+            default -> {
+                System.out.println("Input yang anda masukkan salah!");
+                return;
+            }
         }
 
         // Buat instance transaksi baru
@@ -333,7 +343,7 @@ public class SystemPembeli implements SystemMenu {
             activePembeli.setBalance(activePembeli.getBalance() - finalPrice);
 
             // Masukkan history status transaksi
-            Date date = new Date();
+            Date date = mainRepository.getDate();
             transaksiBaru.getHistoryStatus().add(new TransactionStatus(date, "Sedang Dikemas"));
 
             // Kurangi pemakaian voucher
@@ -367,18 +377,16 @@ public class SystemPembeli implements SystemMenu {
     }
 
     public void handleLacakBarang(){
-
+        // TODO
     }
 
     public void handleLaporanPengeluaran(){
-
+        // TODO
     }
 
     public void handleRiwayatTransaksi(){
-
+        // TODO
     }
-
-
 
     public int getJumlahPenjualDenganProduk(){
         int total = 0;

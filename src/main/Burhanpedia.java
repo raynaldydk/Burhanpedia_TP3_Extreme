@@ -30,6 +30,7 @@ public class Burhanpedia {
         adminRepo = new AdminRepository();
         voucherRepo = new VoucherRepository();
         promoRepo = new PromoRepository();
+        transaksiRepo = new TransaksiRepository();
         date = new Date();
     }
 
