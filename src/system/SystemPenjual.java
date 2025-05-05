@@ -212,18 +212,20 @@ public class SystemPenjual implements SystemMenu{
     }
 
     public void handleKirimBarang(){
-
+        // TODO
     }
 
     public void handleLaporanPendapatan(){
-
+        // TODO
     }
 
     public void handleCekSaldo(){
-
+        System.out.println("==============================");
+        System.out.printf("Saldo saat ini: %.2f\n", (double) activePenjual.getBalance());
+        System.out.println("==============================");
     }
 
     public void handleRiwayatTransaksi(){
-
+        // TODO
     }
 }
