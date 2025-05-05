@@ -1,6 +1,7 @@
 package system;
 
 import main.Burhanpedia;
+import modelsProduct.Product;
 import modelsUser.Penjual;
 
 import java.util.Scanner;
@@ -77,7 +78,23 @@ public class SystemPenjual implements SystemMenu{
     }
 
     public void handleCekProduk(){
+        if(activePenjual.getRepo().getProductList().isEmpty()){
+            System.out.println("""
+                    ==============================
+                    Toko belum memiliki produk!
+                    ==============================
+                    """);
+            return;
+        }
 
+        System.out.println("==================================");
+        for(Product product : activePenjual.getRepo().getProductList()){
+            System.out.printf("%-10s %10.2f %10d\n",
+                    product.getProductName(),
+                    (double) product.getProductPrice(),
+                    product.getProductStock());
+        }
+        System.out.println("==================================");
     }
 
     public void handleTambahProduk(){
