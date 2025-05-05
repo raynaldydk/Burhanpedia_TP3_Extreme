@@ -300,6 +300,7 @@ public class MainMenuSystem implements SystemMenu {
                     System.out.printf("Login berhasil! Selamat datang %s!\n", username);
                     Penjual penjual = (Penjual) user;
                     systemPenjual = new SystemPenjual(penjual, mainRepository);
+                    systemPenjual.handleMenu();
                 }
             }
         }
@@ -318,6 +319,7 @@ public class MainMenuSystem implements SystemMenu {
                     System.out.printf("Login berhasil! Selamat datang %s!\n", username);
                     Pembeli pembeli = (Pembeli) user;
                     systemPembeli = new SystemPembeli(pembeli, mainRepository);
+                    systemPembeli.handleMenu();
                 }
             }
         }
@@ -336,6 +338,7 @@ public class MainMenuSystem implements SystemMenu {
                     System.out.printf("Login berhasil! Selamat datang %s!\n", username);
                     Pengirim pengirim = (Pengirim) user;
                     systemPengirim = new SystemPengirim(pengirim, mainRepository);
+                    systemPengirim.handleMenu();
                 }
             }
         }
