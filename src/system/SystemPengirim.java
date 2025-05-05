@@ -53,7 +53,7 @@ public class SystemPengirim implements SystemMenu {
                 case "5":
                     break;
                 default:
-                    System.out.println("Invalid input!");
+                    System.out.println("Input yang anda masukkan salah!");
                     break;
             }
         }while(!inputMenu.equals("5"));
