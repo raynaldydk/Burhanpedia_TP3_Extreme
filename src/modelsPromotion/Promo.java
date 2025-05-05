@@ -11,9 +11,31 @@ public class Promo {
         this.berlakuHingga = berlakuHingga;
     }
 
-    public int calculateDisc(){
-        // TODO
-        return 0;
+    public int calculateDisc() {
+        int sum = 0;
+
+        // Iterasi setiap karakter di id
+        for (char c : id.toCharArray()) {
+            if (Character.isDigit(c)) {
+                sum += Character.getNumericValue(c);
+            }
+        }
+
+        // Kalau tidak ada angka sama sekali
+        if (sum == 0) {
+            return 5;
+        }
+
+        // Kalau hasil >= 100, harus dipecah lagi
+        while (sum >= 100) {
+            int temp = 0;
+            for (char c : String.valueOf(sum).toCharArray()) {
+                temp += Character.getNumericValue(c);
+            }
+            sum = temp;
+        }
+
+        return sum;
     }
 
     public String getId() {
