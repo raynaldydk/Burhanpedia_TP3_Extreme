@@ -192,7 +192,28 @@ public class MainMenuSystem implements SystemMenu {
     }
 
     public void handleCekSaldoAntarAkun(String username){
+        StringBuilder sb = new StringBuilder();
+        boolean found = false;
 
+        sb.append("\nRole      | Saldo\n");
+        sb.append("=========================\n");
+
+        for (User user : mainRepository.getUserRepo().getAll()) {
+            if (user.getUsername().equalsIgnoreCase(username)) {
+                found = true;
+                String role = user.getRole();
+                double saldo = user.getBalance();
+                sb.append(String.format("%-10s| %.2f\n", role, saldo));
+            }
+        }
+
+        sb.append("=========================\n");
+
+        if (!found) {
+            System.out.printf("Username %s tidak ditemukan di sistem.\n", username);
+        }
+
+        System.out.println(sb);
     }
 
     public void showHeader(){
