@@ -103,7 +103,7 @@ public class SystemPenjual implements SystemMenu{
         String namaProduk = input.nextLine();
 
         // Cek apakah product sudah pernah di input
-        if(produkSudahAda(namaProduk)){
+        if(produkTersedia(namaProduk)){
             System.out.println("Produk sudah ada pada repository!");
             return;
         }
@@ -135,15 +135,6 @@ public class SystemPenjual implements SystemMenu{
         activePenjual.getRepo().getProductList().add(produkBaru);
         System.out.println("Berhasil menambahkan produk baru!");
 
-    }
-
-    public boolean produkSudahAda(String namaProduk){
-        for(Product product : activePenjual.getRepo().getProductList()){
-            if (product.getProductName().equalsIgnoreCase(namaProduk)){
-                return true;
-            }
-        }
-        return false;
     }
 
     public void handleTambahStok(){
@@ -189,7 +180,35 @@ public class SystemPenjual implements SystemMenu{
     }
 
     public void handleUbahHarga(){
+        // Input nama produk
+        System.out.print("Masukkan nama produk: ");
+        String namaProduk = input.nextLine();
 
+        // Cek apakah produk tersedia pada repository
+        if(!produkTersedia(namaProduk)){
+            System.out.printf("Tidak ada produk %s pada repository!\n", namaProduk.toLowerCase());
+            return;
+        }
+
+        // Search produk
+        Product produk = activePenjual.getRepo().getProductByName(namaProduk);
+
+        // Input harga produk yang baru
+        System.out.print("Masukkan harga produk yang baru: ");
+        long hargaProdukBaru = input.nextLong();
+        input.nextLine();
+
+        // Cek apakah input valid
+        if(hargaProdukBaru <= 0){
+            System.out.println("Input harga tidak boleh negatif atau nol!");
+            return;
+        }
+
+        // Simpan harga baru ke product repo
+        produk.setProductPrice(hargaProdukBaru);
+
+        // Success msg
+        System.out.printf("Harga %s diperbarui: %d\n", produk.getProductName(), hargaProdukBaru);
     }
 
     public void handleKirimBarang(){
