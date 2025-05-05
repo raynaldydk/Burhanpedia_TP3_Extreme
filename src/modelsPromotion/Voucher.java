@@ -13,9 +13,30 @@ public class Voucher {
         this.berlakuHingga = berlakuHingga;
     }
 
-    public int calculateDisc(){
-        // TODO
-        return 0;
+    public int calculateDisc(String voucher) {
+        int length = voucher.length();
+        int mid = length / 2;
+        int sum = 0;
+
+        // Mengalikan angka dari ujung ke tengah
+        for (int i = 0; i < mid; i++) {
+            int left = Character.getNumericValue(voucher.charAt(i));
+            int right = Character.getNumericValue(voucher.charAt(length - 1 - i));
+            sum += left * right;
+        }
+
+        // Case untuk sum yang panjangnya ganjil
+        if (length % 2 != 0) {
+            sum += Character.getNumericValue(voucher.charAt(mid));
+        }
+
+        // Base case, jika sum <= 100, return sum
+        if (sum <= 100) {
+            return sum;
+        }
+
+        // Case untuk sum > 100, lakukan ulang rekursi
+        return calculateDisc(String.valueOf(sum));
     }
 
     public String getId() {
