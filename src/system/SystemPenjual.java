@@ -79,7 +79,7 @@ public class SystemPenjual implements SystemMenu{
 
     public void handleCekProduk(){
         if(activePenjual.getRepo().getProductList().isEmpty()){
-            System.out.println("""
+            System.out.print("""
                     ==============================
                     Toko belum memiliki produk!
                     ==============================

@@ -102,13 +102,13 @@ public class MainMenuSystem implements SystemMenu {
             switch (pilihan){
                 case "1":
                     handleLoginPenjual(username);
-                    break;
+                    return;
                 case "2":
                     handleLoginPembeli(username);
-                    break;
+                    return;
                 case "3":
                     handleLoginPengirim(username);
-                    break;
+                    return;
                 case "4":
                     handleCekSaldoAntarAkun(username);
                     break;
@@ -208,7 +208,7 @@ public class MainMenuSystem implements SystemMenu {
             }
         }
 
-        sb.append("=========================\n");
+        sb.append("=========================");
 
         if (!found) {
             System.out.printf("Username %s tidak ditemukan di sistem.\n", username);
