@@ -75,7 +75,7 @@ public class MainMenuSystem implements SystemMenu {
         String username = input.nextLine();
 
         // Cek apakah username ada pada userRepo
-        if(mainRepository.getUserRepo().getUserByName(username) == null) {
+        if(mainRepository.getUserRepo().getUserByName(username) == null && mainRepository.getAdminRepo().getAdminByUsername(username) == null) {
             System.out.printf("Tidak ada user dengan nama %s\n", username);
             return;
         }
@@ -89,7 +89,7 @@ public class MainMenuSystem implements SystemMenu {
             Admin admin = mainRepository.getAdminRepo().getAdminByUsername(username);
 
             // Success msg
-            System.out.printf("Login berhasil! Selamat datang %s\n", username);
+            System.out.printf("Login berhasil! Selamat datang %s!\n", username);
             systemAdmin = new SystemAdmin(admin, mainRepository);
             systemAdmin.handleMenu();
         }

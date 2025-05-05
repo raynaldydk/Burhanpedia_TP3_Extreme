@@ -87,7 +87,7 @@ public class SystemAdmin implements SystemMenu {
     public void handleLihatVoucher(){
         // Cek apakah ada voucher di repo
         if(mainRepository.getVoucherRepo().getAll().isEmpty()){
-            System.out.println("""
+            System.out.print("""
                     ==============================
                     Belum ada voucher yang dibuat!
                     ==============================
@@ -122,29 +122,12 @@ public class SystemAdmin implements SystemMenu {
                     break;
             }
         }while(!pilihanMenuVoucher.equals("3"));
-
-        // Apabila ada voucher
-        System.out.println("============================================================");
-        for(Voucher voucher : mainRepository.getVoucherRepo().getAll()){
-
-            // Format tanggal
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            String tanggalBerlaku = dateFormat.format(voucher.getBerlakuHingga());
-
-            // Print voucher list
-            System.out.printf("%s [Dapat digunakan %d kali] [Sampai dengan %s]\n",
-                    voucher.getId(),
-                    voucher.getSisaPemakaian(),
-                    tanggalBerlaku
-            );
-        }
-        System.out.println("============================================================");
     }
 
     public void handleLihatPromo(){
         // Cek apakah ada promo di repo
         if (mainRepository.getPromoRepo().getAll().isEmpty()){
-            System.out.println("""
+            System.out.print("""
                     ==============================
                     Belum ada promo yang dibuat!
                     ==============================
@@ -251,11 +234,13 @@ public class SystemAdmin implements SystemMenu {
             String formattedDate = dateFormat.format(voucherTemp.getBerlakuHingga());
 
             // Print voucher
+            System.out.println("============================================================");
             System.out.printf("%s [Dapat digunakan %d kali] [Sampai dengan %s]\n",
                     voucherTemp.getId(),
                     voucherTemp.getSisaPemakaian(),
                     formattedDate
             );
+            System.out.println("============================================================");
         }
 
         // Apabila voucher tidak ditemukan

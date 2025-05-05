@@ -12,6 +12,10 @@ import java.util.Date;
 public class PromoRepository implements DiskonRepository<Promo> {
     private ArrayList<Promo> promoList;
 
+    public PromoRepository() {
+        promoList = new ArrayList<>();
+    }
+
     @Override
     public Promo getById(String id) {
         for (Promo promo : promoList) {
