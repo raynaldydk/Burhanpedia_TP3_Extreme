@@ -43,4 +43,13 @@ public class UserRepository {
     public ArrayList<User> getAll() {
         return userList;
     }
+
+    public boolean login(String username, String password) {
+        for (User user : userList) {
+            if(user.getUsername().equalsIgnoreCase(username) && user.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -25,6 +25,10 @@ public class ProductRepository {
         return namaToko;
     }
 
+    public void setNamaToko(String namaToko) {
+        this.namaToko = namaToko;
+    }
+
     public ArrayList<Product> getProductList() {
         return productList;
     }
