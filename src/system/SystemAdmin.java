@@ -74,7 +74,13 @@ public class SystemAdmin implements SystemMenu {
     }
 
     public void handleGeneratePromo(){
+        // Input tanggal berlaku
+        String tanggalBerlaku;
+        System.out.print("Promo berlaku hingga: ");
+        tanggalBerlaku = input.nextLine();
 
+        // Generate promo
+        mainRepository.getPromoRepo().generate(tanggalBerlaku);
     }
 
     public void handleLihatVoucher(){
