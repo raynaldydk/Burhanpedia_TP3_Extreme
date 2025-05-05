@@ -1,6 +1,7 @@
 package system;
 
 import main.Burhanpedia;
+import modelsProduct.CartProduct;
 import modelsProduct.Product;
 import modelsUser.Pembeli;
 import modelsUser.Penjual;
@@ -8,6 +9,7 @@ import modelsUser.User;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class SystemPembeli implements SystemMenu {
     private Pembeli activePembeli;
@@ -137,7 +139,74 @@ public class SystemPembeli implements SystemMenu {
     }
 
     public void handleTambahToKeranjang(){
+        // Input nama toko
+        System.out.print("Masukkan toko penjual yang ingin dibeli");
+        String namaToko = input.nextLine();
 
+        // Cek apakah ada toko dengan nama tersebut
+        if(getPenjualByNamaToko(namaToko) == null){
+            System.out.printf("Tidak ada toko dengan nama %s!\n", namaToko);
+            return;
+        }
+
+        // Get instance penjual
+        Penjual penjual = getPenjualByNamaToko(namaToko);
+
+        // Input nama barang yang mau dibeli
+        System.out.print("Masukkan nama barang yang ingin dibeli: ");
+        String namaBarang = input.nextLine();
+
+        // Cek apakah ada produk dengan nama tersebut
+        if(getProdukByPenjual(penjual, namaBarang) == null){
+            System.out.printf("Tidak ada produk dengan nama %s pada repo!\n", namaBarang);
+            return;
+        }
+
+        // Get instance Product
+        Product product = getProdukByPenjual(penjual, namaBarang);
+
+        // Input jumlah barang yang ingin dibeli
+        System.out.print("Masukkan jumlah barang yang ingin dibeli: ");
+        int jumlahBarang = input.nextInt();
+        input.nextLine();
+
+        // Validasi input qty barang
+        if(jumlahBarang < 0){
+            System.out.println("Qty barang tidak boleh negatif atau nol!");
+            return;
+        }
+
+        // Cek apakah cart sudah memiliki barang dari toko lain
+        if(!activePembeli.getCart().getCartContent().isEmpty()){
+            CartProduct cartProduct = activePembeli.getCart().getCartContent().get(0);
+            Penjual penjualInCart = getPenjualByProductId(cartProduct.getProductId());
+
+            if(penjualInCart != penjual){
+                System.out.println("Anda sudah memiliki barang di keranjang yang berasal dari toko berbeda.");
+                System.out.print("Kosongkan keranjang dan masukkan barang yang baru? (Y/N): ");
+                String kosongkanKeranjang = input.nextLine();
+
+                if(kosongkanKeranjang.equalsIgnoreCase("y")){
+                    activePembeli.getCart().getCartContent().clear();
+                }
+
+                else if(kosongkanKeranjang.equalsIgnoreCase("n")){
+                    System.out.println("Penambahan barang dibatalkan!");
+                    return;
+                }
+
+                else{
+                    System.out.println("Input yang anda masukkan salah!");
+                    return;
+                }
+            }
+        }
+
+        // Masukkan barang ke cart
+        activePembeli.getCart().addToCart(product.getProductId(), jumlahBarang);
+
+        // Success msg
+        System.out.println("Barang berhasil ditambahkan!");
     }
 
     public void handleCheckout(){
@@ -176,7 +245,36 @@ public class SystemPembeli implements SystemMenu {
                 total++;
             }
         }
-
         return total;
     }
+
+    public Penjual getPenjualByNamaToko(String namaToko){
+        for(Penjual penjual: getDaftarPenjual()){
+            if(penjual.getRepo().getNamaToko().equalsIgnoreCase(namaToko)){
+                return penjual;
+            }
+        }
+        return null;
+    }
+
+    public Product getProdukByPenjual(Penjual penjual, String namaProduk){
+        for(Product product : penjual.getRepo().getProductList()){
+            if(product.getProductName().equalsIgnoreCase(namaProduk)){
+                return product;
+            }
+        }
+        return null;
+    }
+
+    public Penjual getPenjualByProductId(UUID productId){
+        for (Penjual penjual : getDaftarPenjual()){
+            for (Product product : penjual.getRepo().getProductList()){
+                if(product.getProductId().equals(productId)){
+                    return penjual;
+                }
+            }
+        }
+        return null;
+    }
+
 }
