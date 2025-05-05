@@ -98,7 +98,52 @@ public class SystemPenjual implements SystemMenu{
     }
 
     public void handleTambahProduk(){
+        // Input nama produk
+        System.out.print("\nMasukkan nama produk: ");
+        String namaProduk = input.nextLine();
 
+        // Cek apakah product sudah pernah di input
+        if(produkSudahAda(namaProduk)){
+            System.out.println("Produk sudah ada pada repository!");
+            return;
+        }
+
+        // Input stok produk
+        System.out.print("Masukkan stok produk: ");
+        int stokProduk = input.nextInt();
+        input.nextLine();
+
+        // Cek apakah input lebih kecil dari sama dengan nol
+        if(stokProduk <= 0){
+            System.out.println("Input stok tidak boleh nol atau negatif!");
+            return;
+        }
+
+        // Input harga produk
+        System.out.print("Masukkan harga produk: ");
+        long hargaProduk = input.nextLong();
+        input.nextLine();
+
+        // Cek apakah input harga valid
+        if(hargaProduk <= 0){
+            System.out.println("Input harga tidak boleh nol atau negatif!");
+            return;
+        }
+
+        // Input produk baru ke productRepo
+        Product produkBaru = new Product(namaProduk, stokProduk, hargaProduk);
+        activePenjual.getRepo().getProductList().add(produkBaru);
+        System.out.println("Berhasil menambahkan produk baru!");
+
+    }
+
+    public boolean produkSudahAda(String namaProduk){
+        for(Product product : activePenjual.getRepo().getProductList()){
+            if (product.getProductName().equalsIgnoreCase(namaProduk)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void handleTambahStok(){
