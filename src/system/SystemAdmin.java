@@ -64,7 +64,13 @@ public class SystemAdmin implements SystemMenu {
     }
 
     public void handleGenerateVoucher(){
+        // Input tanggal berlaku
+        String tanggalBerlaku;
+        System.out.print("Voucher berlaku hingga: ");
+        tanggalBerlaku = input.nextLine();
 
+        // Generate voucher
+        mainRepository.getVoucherRepo().generate(tanggalBerlaku);
     }
 
     public void handleGeneratePromo(){
