@@ -90,7 +90,7 @@ public class MainMenuSystem implements SystemMenu {
 
         String pilihan;
         do{
-            System.out.println("Pilih opsi login:");
+            System.out.println("\nPilih opsi login:");
             System.out.println("1. Penjual");
             System.out.println("2. Pembeli");
             System.out.println("3. Pengirim");
@@ -131,8 +131,6 @@ public class MainMenuSystem implements SystemMenu {
 
         // Cek apakah sudah ada akun dengan username tersebut
         if(mainRepository.getUserRepo().getUserByName(username) != null){
-            System.out.println("Username sudah ada! Silahkan konfirmasi password untuk menambahkan role lain.");
-
             // Cek apakah user sudah memiliki semua role
             ArrayList<String> userRoles = mainRepository.getUserRepo().getUserRoles(username);
             if(userRoles.size() == 3){
@@ -140,6 +138,8 @@ public class MainMenuSystem implements SystemMenu {
                         "sudah memiliki semua role, registrasi dibatalkan.\n", username.toLowerCase());
                 return;
             }
+
+            System.out.println("Username sudah ada! Silahkan konfirmasi password untuk menambahkan role lain.");
 
             System.out.print("Masukkan password: ");
             password = input.nextLine();
@@ -179,6 +179,7 @@ public class MainMenuSystem implements SystemMenu {
                     handleRegisterPengirim(username, password);
                     return;
                 case "4":
+                    System.out.println("Registrasi dibatalkan, kembali ke menu utama...");
                     break;
                 default:
                     System.out.println("Pilihan tidak valid!");
