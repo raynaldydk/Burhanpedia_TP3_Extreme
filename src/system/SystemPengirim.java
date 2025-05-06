@@ -5,7 +5,11 @@ import modelsTransaction.Transaksi;
 import modelsUser.Pengirim;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -98,7 +102,70 @@ public class SystemPengirim implements SystemMenu {
     }
 
     public void handleTakeJob(){
-        // TODO
+        // Input id transaksi yang ingin diambil
+        System.out.print("Masukkan ID Transaksi yang ingin diambil: ");
+        String idTransaksi = input.nextLine();
+
+        // Get transaksi yang ingin diambil
+        Transaksi transaksiDiambil = null;
+        ArrayList<Transaksi> jobList = getJobList();
+        for(Transaksi transaksi : jobList){
+            if(transaksi.getId().equals(idTransaksi)){
+                transaksiDiambil = transaksi;
+            }
+        }
+
+        // Cek apakah id transaksi valid
+        if(transaksiDiambil == null){
+            System.out.println("Tidak ada transaksi dengan id tersebut!");
+            return;
+        }
+
+        // Cek apakah job bisa diambil
+        if(!transaksiDiambil.getCurrentStatus().equalsIgnoreCase("Menunggu Pengirim")){
+            System.out.println("Tidak dapat mengambil pesanan ini.");
+            return;
+        }
+
+        // Cek batas tanggal pengiriman
+        Date tanggalSekarang = mainRepository.getDate();
+        Date tanggalDikirim = transaksiDiambil.getHistoryStatus().get(1).getTimestamp();
+        String jenisTransaksi = transaksiDiambil.getJenisTransaksi();
+        LocalDate tanggalSekarangLD = tanggalSekarang.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        LocalDate tanggalDikirimLD = tanggalDikirim.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        boolean dapatDiambil = false;
+
+        // Instant
+        if(jenisTransaksi.equalsIgnoreCase("Instant")){
+            dapatDiambil = tanggalSekarangLD.isEqual(tanggalDikirimLD);
+        }
+
+        // Next Day
+        else if(jenisTransaksi.equalsIgnoreCase("Next Day")){
+            long selisih = ChronoUnit.DAYS.between(tanggalDikirimLD, tanggalSekarangLD);
+            dapatDiambil = selisih >= 0 && selisih <= 1;
+        }
+
+        // Reguler
+        else{
+            long selisih = ChronoUnit.DAYS.between(tanggalDikirimLD, tanggalSekarangLD);
+            dapatDiambil = selisih >= 0 && selisih <= 2;
+        }
+
+        // Jika job bisa diambil
+        if(dapatDiambil){
+            transaksiDiambil.setNamePengirim(activePengirim.getUsername());
+            System.out.printf("Pesanan berhasil diambil oleh %s.\n", activePengirim.getUsername());
+        }
+        else{
+            System.out.println("Tidak dapat mengambil pesanan ini.");
+        }
     }
 
     public void handleConfirmJob(){

@@ -69,4 +69,8 @@ public class Transaksi {
     public String getJenisTransaksi() {
         return jenisTransaksi;
     }
+
+    public void setNamePengirim(String namePengirim) {
+        this.namePengirim = namePengirim;
+    }
 }
