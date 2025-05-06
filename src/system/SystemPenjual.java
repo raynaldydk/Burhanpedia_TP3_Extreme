@@ -215,7 +215,7 @@ public class SystemPenjual implements SystemMenu{
 
     public void handleKirimBarang(){
         // Cek apakah ada barang yang perlu dikirim
-        if(getTransaksiPerluDikirimList() == null){
+        if(getTransaksiPerluDikirimList().isEmpty()){
             System.out.println("========================================");
             System.out.println("Tidak ada barang yang bisa dikirim!");
             System.out.println("========================================");
@@ -227,7 +227,7 @@ public class SystemPenjual implements SystemMenu{
 
     public void handleLaporanPendapatan(){
         // Cek apakah ada transaksi yang dilakukan penjual
-        if(getTransaksiListByPenjual() == null){
+        if(getTransaksiListByPenjual().isEmpty()){
             System.out.println("================================");
             System.out.println("Laporan pendapatan masih kosong!");
             System.out.println("================================");
@@ -245,7 +245,7 @@ public class SystemPenjual implements SystemMenu{
 
     public void handleRiwayatTransaksi(){
         // Cek apakah ada transaksi yang dilakukan penjual
-        if(getTransaksiListByPenjual() == null){
+        if(getTransaksiListByPenjual().isEmpty()){
             System.out.println("================================");
             System.out.println("Riwayat transaksi masih kosong! ");
             System.out.println("================================");
