@@ -14,6 +14,7 @@ import modelsUser.User;
 import modelsUser.UserRepository;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -77,7 +78,7 @@ public class Burhanpedia {
             }
 
             // Cek apakah voucher masih berlaku
-            if(getDate().after(voucherTemp.getBerlakuHingga())){
+            if(isAfterDateOnly(getDate(), voucherTemp.getBerlakuHingga())){
                 System.out.println("Voucher sudah tidak berlaku!");
                 return -1;
             }
@@ -93,8 +94,8 @@ public class Burhanpedia {
 
             // Cek apakah promo masih berlaku
 
-            if(getDate().after(promoTemp.getBerlakuHingga())){
-                System.out.println("Voucher sudah tidak berlaku!");
+            if(isAfterDateOnly(getDate(), promoTemp.getBerlakuHingga())){
+                System.out.println("Promo sudah tidak berlaku!");
                 return -1;
             }
 
@@ -150,6 +151,24 @@ public class Burhanpedia {
         }
 
         return daftarPenjual;
+    }
+
+    private boolean isAfterDateOnly(Date d1, Date d2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(d1);
+        cal1.set(Calendar.HOUR_OF_DAY, 0);
+        cal1.set(Calendar.MINUTE, 0);
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(d2);
+        cal2.set(Calendar.HOUR_OF_DAY, 0);
+        cal2.set(Calendar.MINUTE, 0);
+        cal2.set(Calendar.SECOND, 0);
+        cal2.set(Calendar.MILLISECOND, 0);
+
+        return cal1.after(cal2);
     }
 
 
