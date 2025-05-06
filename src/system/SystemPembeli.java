@@ -140,7 +140,7 @@ public class SystemPembeli implements SystemMenu {
 
             // Print produk
             for(Product product : penjual.getRepo().getProductList()){
-                System.out.printf("%-10s %14.2f %d\n",
+                System.out.printf("%-10s %14.2f %5d\n",
                         product.getProductName(),
                         (double) product.getProductPrice(),
                         product.getProductStock()
@@ -255,7 +255,7 @@ public class SystemPembeli implements SystemMenu {
             subtotal += totalHarga;
 
             // Print keranjang
-            System.out.printf("%-12s %13.2f %4d (%.2f)\n", namaProduk, hargaProduk, qtyProduk, totalHarga);
+            System.out.printf("%-10s %2.2f %4d (%.2f)\n", namaProduk, hargaProduk, qtyProduk, totalHarga);
         }
         System.out.println("----------------------------------------");
         System.out.printf("Subtotal:   %.2f\n", subtotal);
@@ -265,10 +265,10 @@ public class SystemPembeli implements SystemMenu {
         System.out.print("Apakah anda yakin dengan produknya? (Y/N): ");
         String konfirmasiProduk = input.nextLine();
 
-        if (konfirmasiProduk.equals("n")) {
+        if (konfirmasiProduk.equalsIgnoreCase("n")) {
             System.out.println("Checkout dibatalkan!");
             return;
-        } else if (!konfirmasiProduk.equals("y")) {
+        } else if (!konfirmasiProduk.equalsIgnoreCase("y")) {
             System.out.println("Input yang anda masukkan salah!");
             return;
         }
@@ -289,8 +289,8 @@ public class SystemPembeli implements SystemMenu {
         // Pilih opsi pengiriman
         System.out.println("Pilih opsi pengiriman: ");
         System.out.println("1. Instant  (20.000)");
-        System.out.println("2. Reguler  (15.000)");
-        System.out.println("3. Next Day (10.000)");
+        System.out.println("2. Next Day  (15.000)");
+        System.out.println("3. Reguler (10.000)");
         System.out.print("Pilihan pengiriman: ");
         String pilihanOngkir = input.nextLine();
 
@@ -304,11 +304,11 @@ public class SystemPembeli implements SystemMenu {
                 biayaOngkir = 20000;
             }
             case "2" -> {
-                jenisTransaksi = "Reguler";
+                jenisTransaksi = "Next Day";
                 biayaOngkir = 15000;
             }
             case "3" -> {
-                jenisTransaksi = "Next Day";
+                jenisTransaksi = "Reguler";
                 biayaOngkir = 10000;
             }
             default -> {
