@@ -3,6 +3,7 @@ package system;
 import main.Burhanpedia;
 import modelsProduct.Product;
 import modelsTransaction.Transaksi;
+import modelsTransaction.TransaksiProduct;
 import modelsUser.Penjual;
 
 import java.text.SimpleDateFormat;
@@ -253,7 +254,45 @@ public class SystemPenjual implements SystemMenu{
             return;
         }
 
-        // TODO
+        double grandtotal = 0;
+
+        for (Transaksi transaksi : getTransaksiListByPenjual()){
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID"));
+            String tanggal = formatter.format(transaksi.getHistoryStatus().get(0).getTimestamp());
+
+            System.out.println("===== LAPORAN PENDAPATAN =====");
+            System.out.printf("%-16s %s\n", "ID Transaksi", transaksi.getId());
+            System.out.printf("%-16s %s\n", "Tanggal", tanggal);
+            System.out.println("------------------------------");
+
+            // Inisialisasi subtotal
+            double subtotal = 0;
+
+            // Items
+            for (TransaksiProduct productDibeli : transaksi.getProdukDibeli()) {
+                Product product = activePenjual.getRepo().getProductById(productDibeli.getProductId());
+                String namaProduk = product.getProductName();
+                double hargaProduk = product.getProductPrice();
+                int jumlahProduk = productDibeli.getProductAmount();
+                double totalHargaProduk = hargaProduk * jumlahProduk;
+
+                System.out.printf("%-10s %11.2f %4d (%.2f)\n",
+                        namaProduk,
+                        hargaProduk,
+                        jumlahProduk,
+                        totalHargaProduk
+                );
+
+                subtotal += totalHargaProduk;
+            }
+            System.out.println("------------------------------");
+            System.out.printf("%-10s %11.2f\n", "Total", subtotal);
+            System.out.println("===============================");
+
+            grandtotal += subtotal;
+
+        }
+        System.out.printf("Total Keseluruhan: %.2f\n", grandtotal);
     }
 
     public void handleCekSaldo(){
