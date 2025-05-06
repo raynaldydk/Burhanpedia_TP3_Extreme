@@ -270,7 +270,30 @@ public class SystemPenjual implements SystemMenu{
             System.out.println("================================");
             return;
         }
-        // TODO
+
+        // Get data
+        ArrayList<Transaksi> transaksiList = getTransaksiListByPenjual();
+
+        // Header
+        System.out.println("===================== RIWAYAT TRANSAKSI =====================");
+        System.out.println("ID Transaksi     Tanggal        Nominal      Keterangan");
+        System.out.println("-------------------------------------------------------------");
+
+        for (Transaksi transaksi : transaksiList) {
+            // Get data transaksi
+            String transaksiId = transaksi.getId();
+            SimpleDateFormat formatter = new SimpleDateFormat("d MMMM yyyy", new Locale("id", "ID"));
+            String tanggal = formatter.format(transaksi.getHistoryStatus().get(0).getTimestamp());
+            double nominal = mainRepository.calculateSubtotalCart(transaksiId);
+
+            // Print
+            if(transaksi.getCurrentStatus().equalsIgnoreCase("Dikembalikan")){
+                System.out.printf("%s  %s  - %.2f  %s\n", transaksiId, tanggal, nominal, "Dikembalikan");
+            }
+            else{
+                System.out.printf("%s  %s  + %.2f  %s\n", transaksiId, tanggal, nominal, "Pembelian produk");
+            }
+        }
     }
 
     public ArrayList<Transaksi> getTransaksiListByPenjual(){
