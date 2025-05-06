@@ -459,7 +459,36 @@ public class SystemPembeli implements SystemMenu {
     }
 
     public void handleRiwayatTransaksi(){
-        // TODO
+        ArrayList<Transaksi> transaksiList = getTransaksiListByPembeli();
+
+        if(transaksiList.isEmpty()){
+            System.out.println("=================================");
+            System.out.println("Laporan pengeluaran masih kosong!");
+            System.out.println("=================================");
+            return;
+        }
+
+        System.out.println("===================== RIWAYAT TRANSAKSI =====================");
+        System.out.println("ID Transaksi     Tanggal        Nominal      Keterangan");
+        System.out.println("-------------------------------------------------------------");
+
+        for(Transaksi transaksi : transaksiList){
+            // Get data transaksi
+            String transaksiId = transaksi.getId();
+            SimpleDateFormat formatter = new SimpleDateFormat("d MMMM yyyy", new Locale("id", "ID"));
+            String tanggal = formatter.format(transaksi.getHistoryStatus().get(0).getTimestamp());
+            double nominal = mainRepository.calculateTotalTransaksi(transaksiId);
+
+            // Print
+            if(transaksi.getCurrentStatus().equalsIgnoreCase("Dikembalikan")){
+                System.out.printf("%s  %s  + %.2f  %s\n", transaksiId, tanggal, nominal, "Dikembalikan");
+            }
+            else{
+                System.out.printf("%s  %s  - %.2f  %s\n", transaksiId, tanggal, nominal, "Pembelian produk");
+            }
+        }
+
+        System.out.println("=============================================================");
     }
 
     public int getJumlahPenjualDenganProduk(){
