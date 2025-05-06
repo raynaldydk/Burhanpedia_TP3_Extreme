@@ -1,13 +1,19 @@
 package main;
 
 import modelsAdmin.Admin;
+import modelsTransaction.TransactionStatus;
+import modelsTransaction.Transaksi;
 import modelsUser.Pembeli;
 import modelsUser.Pengirim;
 import modelsUser.Penjual;
 import modelsUser.User;
 import system.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class MainMenuSystem implements SystemMenu {
@@ -202,7 +208,23 @@ public class MainMenuSystem implements SystemMenu {
     }
 
     public void handleNextDay(){
-        // TODO
+        // Next day
+        LocalDate localDate = mainRepository.getDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .plusDays(1);
+        mainRepository.setDate(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        // Cek apakah ada transaksi yang perlu refund
+        if(!getTransaksiPerluRefund().isEmpty()){
+            ArrayList<Transaksi> transaksiList = getTransaksiPerluRefund();
+
+            // Lakukan refund
+            for(Transaksi transaksi : transaksiList){
+                System.out.println(transaksi.refund(mainRepository));
+            }
+
+        }
     }
 
     public void handleCekSaldoAntarAkun(String username){
@@ -360,5 +382,55 @@ public class MainMenuSystem implements SystemMenu {
             System.out.printf("Username %s tidak memiliki role pengirim!\n", username.toLowerCase());
         }
     }
+
+    public ArrayList<Transaksi> getTransaksiPerluRefund(){
+        // Get transaksi yang status nya belum selesai & belum dikembalikan
+        ArrayList<Transaksi> transaksiList = new ArrayList<>();
+
+        for(Transaksi transaksi : mainRepository.getTransaksiRepo().getList()){
+            String statusTransaksi = transaksi.getCurrentStatus();
+
+            if(!statusTransaksi.equalsIgnoreCase("Pesanan Selesai") && !statusTransaksi.equalsIgnoreCase("Dikembalikan")){
+                transaksiList.add(transaksi);
+            }
+        }
+
+        ArrayList<Transaksi> transaksiPerluRefundList = new ArrayList<>();
+
+        for(Transaksi transaksi : transaksiList){
+            String jenisTransaksi = transaksi.getJenisTransaksi();
+            Date tanggalSekarangDate = mainRepository.getDate();
+            Date tanggalDikirimDate = transaksi.getHistoryStatus().get(1).getTimestamp();
+
+            LocalDate tanggalSekarang = tanggalSekarangDate.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
+            LocalDate tanggalDikirim = tanggalDikirimDate.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
+            boolean dapatDiambil = false;
+
+            if (jenisTransaksi.equalsIgnoreCase("Instant")) {
+                // Hanya bisa diambil di hari yang sama dengan tanggal dikirim
+                dapatDiambil = tanggalSekarang.isEqual(tanggalDikirim);
+            } else if (jenisTransaksi.equalsIgnoreCase("Next Day")) {
+                long selisih = ChronoUnit.DAYS.between(tanggalDikirim, tanggalSekarang);
+                dapatDiambil = selisih >= 0 && selisih <= 1;
+            } else { // Reguler
+                long selisih = ChronoUnit.DAYS.between(tanggalDikirim, tanggalSekarang);
+                dapatDiambil = selisih >= 0 && selisih <= 2;
+            }
+
+            boolean perluRefund = !dapatDiambil;
+
+            if(perluRefund){
+                transaksiPerluRefundList.add(transaksi);
+            }
+        }
+
+        return transaksiPerluRefundList;
+    };
 
 }

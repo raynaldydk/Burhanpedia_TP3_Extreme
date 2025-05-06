@@ -287,7 +287,6 @@ public class SystemPengirim implements SystemMenu {
 
     }
 
-
     public ArrayList<Transaksi> getJobList(){
         ArrayList<Transaksi> jobList = new ArrayList<>();
 

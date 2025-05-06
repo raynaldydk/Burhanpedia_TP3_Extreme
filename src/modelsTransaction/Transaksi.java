@@ -1,5 +1,8 @@
 package modelsTransaction;
 
+import main.Burhanpedia;
+import modelsUser.Pembeli;
+
 import java.util.ArrayList;
 
 public class Transaksi {
@@ -25,9 +28,16 @@ public class Transaksi {
         produkDibeli = new ArrayList<>();
     }
 
-    public String refund(){
-        // TODO
-        return "";
+    public String refund(Burhanpedia mainRepository) {
+        // Update status transaksi
+        TransactionStatus statusTransaksi = new TransactionStatus(mainRepository.getDate(), "Dikembalikan");
+        this.getHistoryStatus().add(statusTransaksi);
+
+        // Kembalikan balance pembeli
+        Pembeli pembeli = (Pembeli) mainRepository.getUserRepo().getUserByName(this.getNamePembeli());
+        pembeli.setBalance(pembeli.getBalance() + mainRepository.calculateTotalTransaksi(this.getId()));
+
+        return String.format("Transaksi dengan ID %s berhasil di refund!", this.getId());
     }
 
     public String getCurrentStatus(){
