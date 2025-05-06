@@ -15,6 +15,7 @@ import modelsUser.Penjual;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class SystemPembeli implements SystemMenu {
@@ -386,7 +387,75 @@ public class SystemPembeli implements SystemMenu {
     }
 
     public void handleLaporanPengeluaran(){
-        // TODO
+        ArrayList<Transaksi> transaksiList = getTransaksiListByPembeli();
+
+        if(transaksiList.isEmpty()){
+            System.out.println("=================================");
+            System.out.println("Laporan pengeluaran masih kosong!");
+            System.out.println("=================================");
+            return;
+        }
+
+        // Grand total
+        double grandTotal = 0.0;
+
+        for(Transaksi transaksi : transaksiList){
+            // Get data transaksi
+            String transaksiId = transaksi.getId();
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID"));
+            String tanggal = formatter.format(transaksi.getHistoryStatus().get(0).getTimestamp());
+            Penjual penjual = (Penjual) mainRepository.getUserRepo().getUserByName(transaksi.getNamePenjual());
+
+            // Header
+            System.out.println("===== LAPORAN PENGELUARAN =====");
+            System.out.printf("%-16s %s\n", "ID Transaksi", transaksiId);
+            System.out.printf("%-16s %s\n", "Tanggal", tanggal);
+            System.out.println("-------------------------------");
+
+            // Inisialisasi subtotal
+            double subtotal = 0;
+
+            // Items
+            for (TransaksiProduct productDibeli : transaksi.getProdukDibeli()) {
+                Product product = penjual.getRepo().getProductById(productDibeli.getProductId());
+                String namaProduk = product.getProductName();
+                double hargaProduk = product.getProductPrice();
+                int jumlahProduk = productDibeli.getProductAmount();
+                double totalHargaProduk = hargaProduk * jumlahProduk;
+
+                System.out.printf("%-10s %11.2f %4d (%.2f)\n",
+                        namaProduk,
+                        hargaProduk,
+                        jumlahProduk,
+                        totalHargaProduk
+                );
+
+                subtotal += totalHargaProduk;
+            }
+
+            // Subtotal, diskon, pajak, ongkir
+            double diskon = getTotalAfterDiskon(transaksi.getIdDiskon(), subtotal);
+            double totalSetelahDiskon = subtotal - diskon;
+            double pajak = 0.03 * totalSetelahDiskon;
+            double biayaOngkir = transaksi.getBiayaOngkir();
+
+            System.out.println("-------------------------------");
+            System.out.printf("%-10s %11.2f\n", "Subtotal", subtotal);
+            System.out.printf("%-10s %11.2f\n", "Diskon", diskon);
+            System.out.printf("%-10s %11.2f\n", "Pajak (3%)", pajak);
+            System.out.printf("%-10s %11.2f\n", "Pengiriman",  biayaOngkir);
+            System.out.println("-------------------------------");
+
+            // Total
+            double total = totalSetelahDiskon + pajak + biayaOngkir;
+            System.out.printf("%-10s %11.2f\n", "Total", total);
+            System.out.println("===============================");
+
+            // Tambah ke grand total
+            grandTotal += total;
+        }
+
+        System.out.printf("Total Keseluruhan: %.2f\n", grandTotal);
     }
 
     public void handleRiwayatTransaksi(){
@@ -470,6 +539,30 @@ public class SystemPembeli implements SystemMenu {
 
     }
 
+    public double getTotalAfterDiskon(String diskonID, double subTotal) {
+        if(mainRepository.getVoucherRepo().getById(diskonID) != null){
+            Voucher voucher = mainRepository.getVoucherRepo().getById(diskonID);
+            double diskon = voucher.calculateDisc(diskonID);
+            return diskon / 100 * subTotal;
+        }
 
+        else if(mainRepository.getPromoRepo().getById(diskonID) != null){
+            Promo promo = mainRepository.getPromoRepo().getById(diskonID);
+            double diskon = promo.calculateDisc();
+            return diskon / 100 * subTotal;
+        }
+        return subTotal;
+    }
+
+    public ArrayList<Transaksi> getTransaksiListByPembeli(){
+        ArrayList<Transaksi> transaksiList = new ArrayList<>();
+
+        for(Transaksi transaksi : mainRepository.getTransaksiRepo().getList()){
+            if(transaksi.getNamePembeli().equalsIgnoreCase(activePembeli.getUsername())){
+                transaksiList.add(transaksi);
+            }
+        }
+        return transaksiList;
+    }
 
 }

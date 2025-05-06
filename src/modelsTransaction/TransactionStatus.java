@@ -14,4 +14,8 @@ public class TransactionStatus {
     public String getStatus() {
         return status;
     }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
 }

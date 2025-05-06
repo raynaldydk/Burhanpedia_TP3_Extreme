@@ -57,4 +57,16 @@ public class Transaksi {
     public long getBiayaOngkir() {
         return biayaOngkir;
     }
+
+    public String getNamePembeli() {
+        return namePembeli;
+    }
+
+    public String getNamePengirim() {
+        return namePengirim;
+    }
+
+    public String getJenisTransaksi() {
+        return jenisTransaksi;
+    }
 }
