@@ -259,7 +259,32 @@ public class SystemPengirim implements SystemMenu {
     }
 
     public void handleRiwayatTransaksi(){
-        // TODO
+        // Get job list pengirim
+        ArrayList<Transaksi> jobList = getJobListByPengirim();
+
+        // Cek apakah ada job yang sudah diambil
+        if (jobList.isEmpty()) {
+            System.out.println("Belum ada job yang diambil!");
+            return;
+        }
+
+        System.out.println("==============================");
+        for (Transaksi transaksi : jobList) {
+            // get data
+            String transaksiId = transaksi.getId();
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID"));
+            String tanggal = formatter.format(transaksi.getHistoryStatus().get(2).getTimestamp());
+            long pendapatan = transaksi.getBiayaOngkir();
+            String namaToko = transaksi.getNamePenjual();
+
+            // print data
+            System.out.printf("%-16s %s\n", "ID Transaksi", transaksiId);
+            System.out.printf("%-16s %s\n", "Tanggal", tanggal);
+            System.out.printf("%-16s %s\n", "Toko", namaToko);
+            System.out.printf("%-16s %d\n", "Pendapatan", pendapatan);
+            System.out.println("==============================");
+        }
+
     }
 
 
