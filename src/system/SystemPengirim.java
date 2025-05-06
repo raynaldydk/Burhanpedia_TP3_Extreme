@@ -1,8 +1,12 @@
 package system;
 
 import main.Burhanpedia;
+import modelsTransaction.Transaksi;
 import modelsUser.Pengirim;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class SystemPengirim implements SystemMenu {
@@ -61,7 +65,36 @@ public class SystemPengirim implements SystemMenu {
     }
 
     public void handleFindJob(){
-        // TODO
+        // Get job list pengirim
+        ArrayList<Transaksi> jobList = getJobList();
+
+        // Cek apakah ada job yang bisa diambil
+        if(jobList.isEmpty()){
+            System.out.println("===============================");
+            System.out.println("Tidak ada job yang bisa diambil");
+            System.out.println("===============================");
+            return;
+        }
+
+        System.out.println("===============================");
+        for(Transaksi transaksi : jobList){
+            // Get data
+            String transaksiId = transaksi.getId();
+            String namaPembeli = transaksi.getNamePembeli();
+            String namaPenjual = transaksi.getNamePenjual();
+
+            // Print data
+            System.out.println("Pesanan tersedia:");
+            System.out.println("ID: " + transaksiId);
+            System.out.println("Pembeli: " + namaPembeli);
+            System.out.println("Penjual: " + namaPenjual);
+
+            // Dashed line pemisah
+            if(transaksi != jobList.get(jobList.size()-1)){
+                System.out.println("-------------------------------");
+            }
+        }
+        System.out.println("===============================");
     }
 
     public void handleTakeJob(){
@@ -74,6 +107,22 @@ public class SystemPengirim implements SystemMenu {
 
     public void handleRiwayatTransaksi(){
         // TODO
+    }
+
+    public ArrayList<Transaksi> getJobList(){
+        ArrayList<Transaksi> jobList = new ArrayList<>();
+
+        for(Transaksi transaksi : mainRepository.getTransaksiRepo().getList()){
+            // Get transaksi current status
+            String statusTransaksi = transaksi.getCurrentStatus();
+
+            // Tambahkan ke joblist jika status = sedang dikemas atau menunggu pengirim
+            if(statusTransaksi.equalsIgnoreCase("Sedang Dikemas") || statusTransaksi.equalsIgnoreCase("Menunggu Pengirim")){
+                jobList.add(transaksi);
+            }
+        }
+
+        return jobList;
     }
 
 }
