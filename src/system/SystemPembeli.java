@@ -383,7 +383,32 @@ public class SystemPembeli implements SystemMenu {
     }
 
     public void handleLacakBarang(){
-        // TODO
+        ArrayList<Transaksi> transaksiList = getTransaksiListByPembeli();
+
+        if(transaksiList.isEmpty()){
+            System.out.println("===================================");
+            System.out.println("Tidak ada barang yang bisa dilacak!");
+            System.out.println("===================================");
+            return;
+        }
+
+        System.out.println("===================================");
+
+        for(Transaksi transaksi : transaksiList){
+            // Get data
+            String transaksiId = transaksi.getId();
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID"));
+            String tanggal = formatter.format(transaksi.getHistoryStatus().get(0).getTimestamp());
+            String namaToko = transaksi.getNamePenjual();
+            String status = transaksi.getCurrentStatus();
+
+            // Print output
+            System.out.printf("%-16s %s\n", "ID Transaksi", transaksiId);
+            System.out.printf("%-16s %s\n", "Tanggal", tanggal);
+            System.out.printf("%-16s %s\n", "Toko", namaToko);
+            System.out.printf("%-16s %s\n", "Status", status);
+            System.out.println("===================================");
+        }
     }
 
     public void handleLaporanPengeluaran(){
@@ -463,7 +488,7 @@ public class SystemPembeli implements SystemMenu {
 
         if(transaksiList.isEmpty()){
             System.out.println("=================================");
-            System.out.println("Laporan pengeluaran masih kosong!");
+            System.out.println("Riwayat transaksi masih kosong!");
             System.out.println("=================================");
             return;
         }
