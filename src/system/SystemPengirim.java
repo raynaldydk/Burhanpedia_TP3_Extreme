@@ -4,6 +4,7 @@ import main.Burhanpedia;
 import modelsTransaction.TransactionStatus;
 import modelsTransaction.Transaksi;
 import modelsUser.Pengirim;
+import modelsUser.Penjual;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -118,7 +119,7 @@ public class SystemPengirim implements SystemMenu {
 
         // Cek apakah id transaksi valid
         if(transaksiDiambil == null){
-            System.out.println("Tidak ada transaksi dengan id tersebut!");
+            System.out.println("Tidak ada pesanan untuk ID tersebut.");
             return;
         }
 
@@ -169,12 +170,92 @@ public class SystemPengirim implements SystemMenu {
             System.out.printf("Pesanan berhasil diambil oleh %s.\n", activePengirim.getUsername());
         }
         else{
-            System.out.println("Tidak dapat mengambil pesanan ini.");
+            System.out.println("Pesanan sudah melewati tanggal pengiriman!");
         }
     }
 
     public void handleConfirmJob(){
-        // TODO
+        // Input transaksi ID yang ingin di confirm
+        System.out.print("Masukkan ID transaksi yang ingin dikonfirmasi: ");
+        String idTransaksi = input.nextLine();
+
+        // Cek apakah ID transaksi valid
+        if(mainRepository.getTransaksiRepo().getTransaksiById(idTransaksi) == null){
+            System.out.println("Tidak ada pesanan untuk ID tersebut.");
+            return;
+        }
+
+        // Get job list yang di take pengirim
+        ArrayList<Transaksi> jobList = getJobListByPengirim();
+
+        // Get transaksi yang dimaksud
+        Transaksi transaksiPengirim = null;
+        for(Transaksi transaksi : jobList){
+            if(transaksi.getId().equalsIgnoreCase(idTransaksi) && transaksi.getCurrentStatus().equalsIgnoreCase("Sedang Dikirim")){
+                transaksiPengirim = transaksi;
+            }
+        }
+
+        // Cek apakah transaksi merupakan job pengirim
+        if(transaksiPengirim == null){
+            System.out.println("Tidak ada pesanan untuk ID tersebut.");
+            return;
+        }
+
+        // Proses jika job valid
+        String jenisTransaksi = transaksiPengirim.getJenisTransaksi();
+        Date tanggalSekarangDate = mainRepository.getDate();
+        Date tanggalDikirimDate = transaksiPengirim.getHistoryStatus().get(0).getTimestamp();
+
+        LocalDate tanggalSekarang = tanggalSekarangDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        LocalDate tanggalDikirim = tanggalDikirimDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        boolean dapatDiselesaikan = false;
+
+        if (jenisTransaksi.equalsIgnoreCase("Instant")) {
+            // Hanya bisa diambil di hari yang sama dengan tanggal dikirim
+            dapatDiselesaikan = tanggalSekarang.isEqual(tanggalDikirim);
+        } else if (jenisTransaksi.equalsIgnoreCase("Next Day")) {
+            long selisih = ChronoUnit.DAYS.between(tanggalDikirim, tanggalSekarang);
+            dapatDiselesaikan = selisih >= 0 && selisih <= 1;
+        } else { // Reguler
+            long selisih = ChronoUnit.DAYS.between(tanggalDikirim, tanggalSekarang);
+            dapatDiselesaikan = selisih >= 0 && selisih <= 2;
+        }
+
+        if(dapatDiselesaikan){
+            // Transaksi diselesaikan
+            mainRepository.getTransaksiRepo().prosesTransaksi(idTransaksi);
+            System.out.printf("Pesanan berhasil diselesaikan oleh %s.\n", activePengirim.getUsername());
+
+            // Tambah balance pengirim
+            activePengirim.setBalance(activePengirim.getBalance() + transaksiPengirim.getBiayaOngkir());
+
+            // Tambah balance penjual
+            Penjual penjual = null;
+
+            for(Penjual penjualRepo : mainRepository.getDaftarPenjual()){
+                if(penjualRepo.getRepo().getNamaToko().equalsIgnoreCase(transaksiPengirim.getNamePenjual())){
+                    penjual = penjualRepo;
+                }
+            }
+
+            if(penjual != null){
+                long totalTransaksi = mainRepository.calculateSubtotalCart(transaksiPengirim.getId());
+                totalTransaksi -= transaksiPengirim.getBiayaOngkir();
+
+                penjual.setBalance(penjual.getBalance() + totalTransaksi);
+            }
+        }
+        else{
+            System.out.println("Pesanan sudah melewati tanggal pengiriman!");
+        }
+
     }
 
     public void handleRiwayatTransaksi(){
@@ -194,6 +275,17 @@ public class SystemPengirim implements SystemMenu {
             }
         }
 
+        return jobList;
+    }
+
+    public ArrayList<Transaksi> getJobListByPengirim(){
+        ArrayList<Transaksi> jobList = new ArrayList<>();
+
+        for(Transaksi transaksi : mainRepository.getTransaksiRepo().getList()){
+            if(transaksi.getNamePengirim().equalsIgnoreCase(activePengirim.getUsername())){
+                jobList.add(transaksi);
+            }
+        }
         return jobList;
     }
 
