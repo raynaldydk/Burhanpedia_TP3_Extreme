@@ -166,7 +166,7 @@ public class SystemPengirim implements SystemMenu {
             mainRepository.getTransaksiRepo().prosesTransaksi(idTransaksi);
 
             // Simpan nama pengirim
-            transaksiDiambil.setNamePengirim(activePengirim.getUsername());
+            mainRepository.getTransaksiRepo().getTransaksiById(idTransaksi).setNamePengirim(activePengirim.getUsername());
             System.out.printf("Pesanan berhasil diambil oleh %s.\n", activePengirim.getUsername());
         }
         else{
@@ -307,8 +307,10 @@ public class SystemPengirim implements SystemMenu {
         ArrayList<Transaksi> jobList = new ArrayList<>();
 
         for(Transaksi transaksi : mainRepository.getTransaksiRepo().getList()){
-            if(transaksi.getNamePengirim().equalsIgnoreCase(activePengirim.getUsername())){
-                jobList.add(transaksi);
+            if(transaksi.getNamePengirim() != null){
+                if(transaksi.getNamePengirim().equalsIgnoreCase(activePengirim.getUsername())){
+                    jobList.add(transaksi);
+                }
             }
         }
         return jobList;

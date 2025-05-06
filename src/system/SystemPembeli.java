@@ -408,9 +408,11 @@ public class SystemPembeli implements SystemMenu {
             System.out.printf("%-16s %s\n", "Toko", namaToko);
             System.out.printf("%-16s %s\n", "Status", status);
 
-            if(!transaksi.getNamePengirim().isEmpty()){
-                String pengirim = transaksi.getNamePengirim();
-                System.out.printf("%-16s %s\n", "Pengirim", pengirim);
+            if(transaksi.getNamePengirim() != null){
+                if(!transaksi.getNamePengirim().isEmpty()){
+                    String pengirim = transaksi.getNamePengirim();
+                    System.out.printf("%-16s %s\n", "Pengirim", pengirim);
+                }
             }
 
             System.out.println("===================================");
@@ -508,7 +510,7 @@ public class SystemPembeli implements SystemMenu {
             String transaksiId = transaksi.getId();
             SimpleDateFormat formatter = new SimpleDateFormat("d MMMM yyyy", new Locale("id", "ID"));
             String tanggal = formatter.format(transaksi.getHistoryStatus().get(0).getTimestamp());
-            double nominal = mainRepository.calculateTotalTransaksi(transaksiId);
+            double nominal = mainRepository.calculateTotalTransaksiWithoutDiskonCheck(transaksiId);
 
             // Print
             if(transaksi.getCurrentStatus().equalsIgnoreCase("Dikembalikan")){
@@ -624,5 +626,7 @@ public class SystemPembeli implements SystemMenu {
         }
         return transaksiList;
     }
+
+
 
 }

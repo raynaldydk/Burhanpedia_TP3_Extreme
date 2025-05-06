@@ -175,5 +175,41 @@ public class Burhanpedia {
         return cal1.after(cal2);
     }
 
+    public long calculateTotalTransaksiWithoutDiskonCheck(String transaksiID){
+        double subTotal = calculateSubtotalCart(transaksiID);
+        double grandTotal = subTotal;
+        boolean validVoucher = true;
+
+        // get instance transaksi
+        Transaksi transaksi = this.getTransaksiRepo().getTransaksiById(transaksiID);
+
+        // Jika memakai voucher
+        if(this.getVoucherRepo().getById(transaksi.getIdDiskon()) != null){
+            Voucher voucherTemp = this.getVoucherRepo().getById(transaksi.getIdDiskon());
+
+            // Kalkulasi harga setelah diskon ketika voucher valid
+            double diskon = voucherTemp.calculateDisc(voucherTemp.getId());
+            grandTotal = subTotal - (subTotal * diskon / 100);
+        }
+
+        // Jika memakai promo
+        else if (this.getPromoRepo().getById(transaksi.getIdDiskon()) != null){
+            Promo promoTemp = this.getPromoRepo().getById(transaksi.getIdDiskon());
+
+            // Kalkulasi harga setelah diskon ketika promo valid
+            int diskon = promoTemp.calculateDisc();
+            grandTotal = subTotal - (subTotal * diskon / 100);
+        }
+
+        // Tambahkan pajak 3%
+        double pajak = 0.03 * grandTotal;
+        grandTotal += (long) pajak;
+
+        // Tambahkan total dengan harga ongkir
+        grandTotal += transaksi.getBiayaOngkir();
+
+        return (long) grandTotal;
+    }
+
 
 }

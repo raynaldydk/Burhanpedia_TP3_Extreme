@@ -333,6 +333,9 @@ public class SystemPenjual implements SystemMenu{
                 System.out.printf("%s  %s  + %.2f  %s\n", transaksiId, tanggal, nominal, "Pembelian produk");
             }
         }
+
+
+        System.out.println("=============================================================");
     }
 
     public ArrayList<Transaksi> getTransaksiListByPenjual(){
