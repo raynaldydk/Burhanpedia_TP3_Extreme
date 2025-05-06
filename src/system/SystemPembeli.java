@@ -4,6 +4,8 @@ import main.Burhanpedia;
 import modelsProduct.Cart;
 import modelsProduct.CartProduct;
 import modelsProduct.Product;
+import modelsPromotion.Promo;
+import modelsPromotion.Voucher;
 import modelsTransaction.TransactionStatus;
 import modelsTransaction.Transaksi;
 import modelsTransaction.TransaksiProduct;
@@ -145,7 +147,7 @@ public class SystemPembeli implements SystemMenu {
             }
 
             // Print dashes line
-            if(penjual != daftarPenjual.get(daftarPenjual.size() - 1)){
+            if(penjual != penjualDenganProduk.get(penjualDenganProduk.size() - 1)){
                 System.out.println("----------------------------------------");
             }
         }
@@ -154,7 +156,7 @@ public class SystemPembeli implements SystemMenu {
 
     public void handleTambahToKeranjang(){
         // Input nama toko
-        System.out.print("Masukkan toko penjual yang ingin dibeli");
+        System.out.print("Masukkan toko penjual yang ingin dibeli: ");
         String namaToko = input.nextLine();
 
         // Cek apakah ada toko dengan nama tersebut
@@ -279,6 +281,9 @@ public class SystemPembeli implements SystemMenu {
 
         // Cek apakah stok penjual cukup
         if(!cekStokPenjual()) return;
+
+        // Get total harga setelah diskon
+        applyVoucher(diskonId, (long) subtotal);
 
         // Pilih opsi pengiriman
         System.out.println("Pilih opsi pengiriman: ");
@@ -445,6 +450,24 @@ public class SystemPembeli implements SystemMenu {
 
         // Generate ID Transaksi
         return "TRX" + formattedDate + nomorTransaksi;
+    }
+
+    public void applyVoucher(String voucherID, long subTotal) {
+
+        if(mainRepository.getVoucherRepo().getById(voucherID) != null){
+            Voucher voucher = mainRepository.getVoucherRepo().getById(voucherID);
+            int diskon = voucher.calculateDisc(voucherID);
+            long total = subTotal - (subTotal * diskon / 100);
+            System.out.printf("Voucher diterapkan! Total harga setelah diskon: %d\n", total);
+        }
+
+        else if(mainRepository.getPromoRepo().getById(voucherID) != null){
+            Promo promo = mainRepository.getPromoRepo().getById(voucherID);
+            int diskon = promo.calculateDisc();
+            long total = subTotal - (subTotal * diskon / 100);
+            System.out.printf("Promo diterapkan! Total harga setelah diskon: %d\n", total);
+        }
+
     }
 
 

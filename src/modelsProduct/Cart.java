@@ -16,7 +16,11 @@ public class Cart {
     }
 
     public String deleteFromCart(UUID productId){
-        //TODO
+        for(CartProduct cartProduct : keranjang){
+            if(cartProduct.getProductId().equals(productId)){
+                keranjang.remove(cartProduct);
+            }
+        }
         return "";
     }
 
