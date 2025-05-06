@@ -1,7 +1,6 @@
 package main;
 
 import modelsAdmin.Admin;
-import modelsTransaction.TransactionStatus;
 import modelsTransaction.Transaksi;
 import modelsUser.Pembeli;
 import modelsUser.Pengirim;
@@ -9,11 +8,13 @@ import modelsUser.Penjual;
 import modelsUser.User;
 import system.*;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class MainMenuSystem implements SystemMenu {
@@ -214,6 +215,11 @@ public class MainMenuSystem implements SystemMenu {
                 .toLocalDate()
                 .plusDays(1);
         mainRepository.setDate(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID"));
+        String tanggal = formatter.format(mainRepository.getDate());
+        System.out.println("Tanggal: " + tanggal);
+        System.out.println("Pok pok pok!");
 
         // Cek apakah ada transaksi yang perlu refund
         if(!getTransaksiPerluRefund().isEmpty()){
