@@ -283,7 +283,7 @@ public class SystemPembeli implements SystemMenu {
         if(!cekStokPenjual()) return;
 
         // Get total harga setelah diskon
-        applyVoucher(diskonId, (long) subtotal);
+        applyDiskon(diskonId, (long) subtotal);
 
         // Pilih opsi pengiriman
         System.out.println("Pilih opsi pengiriman: ");
@@ -452,17 +452,17 @@ public class SystemPembeli implements SystemMenu {
         return "TRX" + formattedDate + nomorTransaksi;
     }
 
-    public void applyVoucher(String voucherID, long subTotal) {
+    public void applyDiskon(String diskonID, long subTotal) {
 
-        if(mainRepository.getVoucherRepo().getById(voucherID) != null){
-            Voucher voucher = mainRepository.getVoucherRepo().getById(voucherID);
-            int diskon = voucher.calculateDisc(voucherID);
+        if(mainRepository.getVoucherRepo().getById(diskonID) != null){
+            Voucher voucher = mainRepository.getVoucherRepo().getById(diskonID);
+            int diskon = voucher.calculateDisc(diskonID);
             long total = subTotal - (subTotal * diskon / 100);
             System.out.printf("Voucher diterapkan! Total harga setelah diskon: %d\n", total);
         }
 
-        else if(mainRepository.getPromoRepo().getById(voucherID) != null){
-            Promo promo = mainRepository.getPromoRepo().getById(voucherID);
+        else if(mainRepository.getPromoRepo().getById(diskonID) != null){
+            Promo promo = mainRepository.getPromoRepo().getById(diskonID);
             int diskon = promo.calculateDisc();
             long total = subTotal - (subTotal * diskon / 100);
             System.out.printf("Promo diterapkan! Total harga setelah diskon: %d\n", total);
