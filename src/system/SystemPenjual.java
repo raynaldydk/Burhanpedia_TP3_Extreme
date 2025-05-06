@@ -5,7 +5,9 @@ import modelsProduct.Product;
 import modelsTransaction.Transaksi;
 import modelsUser.Penjual;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class SystemPenjual implements SystemMenu{
@@ -222,7 +224,24 @@ public class SystemPenjual implements SystemMenu{
             return;
         }
 
-        // TODO
+        for(Transaksi transaksi : getTransaksiPerluDikirimList()){
+            System.out.println("========================================");
+
+            // Proses transaksi
+            mainRepository.getTransaksiRepo().prosesTransaksi(transaksi.getId());
+
+            // Get dataa
+            String transaksiId = transaksi.getId();
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID"));
+            String tanggal = formatter.format(mainRepository.getDate());
+            String status = transaksi.getCurrentStatus();
+
+            // Print data
+            System.out.printf("%-16s %s\n", "ID Transaksi", transaksiId);
+            System.out.printf("%-16s %s\n", "Tanggal", tanggal);
+            System.out.printf("%-16s %s\n", "Status", status);
+            System.out.println("========================================");
+        }
     }
 
     public void handleLaporanPendapatan(){

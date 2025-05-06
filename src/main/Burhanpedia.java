@@ -59,6 +59,10 @@ public class Burhanpedia {
         return date;
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public long calculateTotalTransaksi(String transaksiID){
         double subTotal = calculateSubtotalCart(transaksiID);
         double grandTotal = subTotal;
