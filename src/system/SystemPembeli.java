@@ -435,7 +435,7 @@ public class SystemPembeli implements SystemMenu {
             String transaksiId = transaksi.getId();
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID"));
             String tanggal = formatter.format(transaksi.getHistoryStatus().get(0).getTimestamp());
-            Penjual penjual = (Penjual) mainRepository.getUserRepo().getUserByName(transaksi.getNamePenjual());
+            Penjual penjual = mainRepository.getPenjualByProductId(transaksi.getProdukDibeli().get(0).getProductId());
 
             // Header
             System.out.println("===== LAPORAN PENGELUARAN =====");
