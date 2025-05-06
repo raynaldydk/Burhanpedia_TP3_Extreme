@@ -1,6 +1,7 @@
 package system;
 
 import main.Burhanpedia;
+import modelsTransaction.TransactionStatus;
 import modelsTransaction.Transaksi;
 import modelsUser.Pengirim;
 
@@ -160,6 +161,10 @@ public class SystemPengirim implements SystemMenu {
 
         // Jika job bisa diambil
         if(dapatDiambil){
+            // Tambahkan status baru
+            mainRepository.getTransaksiRepo().prosesTransaksi(idTransaksi);
+
+            // Simpan nama pengirim
             transaksiDiambil.setNamePengirim(activePengirim.getUsername());
             System.out.printf("Pesanan berhasil diambil oleh %s.\n", activePengirim.getUsername());
         }
