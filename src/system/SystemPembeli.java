@@ -407,6 +407,12 @@ public class SystemPembeli implements SystemMenu {
             System.out.printf("%-16s %s\n", "Tanggal", tanggal);
             System.out.printf("%-16s %s\n", "Toko", namaToko);
             System.out.printf("%-16s %s\n", "Status", status);
+
+            if(!transaksi.getNamePengirim().isEmpty()){
+                String pengirim = transaksi.getNamePengirim();
+                System.out.printf("%-16s %s\n", "Pengirim", pengirim);
+            }
+
             System.out.println("===================================");
         }
     }
